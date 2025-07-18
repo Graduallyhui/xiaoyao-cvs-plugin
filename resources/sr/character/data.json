@@ -875,11 +875,104 @@
     "key": "Mydeimos",
     "name": "万敌",
     "names": [
+      "迈德漠斯",
       "万敌"
     ],
     "star": 5,
     "elem": "虚数",
     "weapon": "毁灭"
+  },
+  "1407": {
+    "id": 1407,
+    "key": "Castorice",
+    "name": "遐蝶",
+    "names": [
+      "小蝶",
+      "遐蝶"
+    ],
+    "star": 5,
+    "elem": "量子",
+    "weapon": "记忆"
+  },
+  "1405": {
+    "id": 1405,
+    "key": "Anaxagoras",
+    "name": "那刻夏",
+    "names": [
+      "阿那克萨戈拉斯",
+      "那刻夏"
+    ],
+    "star": 5,
+    "elem": "风",
+    "weapon": "智识"
+  },
+  "1409": {
+    "id": 1409,
+    "key": "Hyacine",
+    "name": "风堇",
+    "names": [
+      "雅辛忒丝",
+      "风堇"
+    ],
+    "star": 5,
+    "elem": "风",
+    "weapon": "记忆"
+  },
+  "1406": {
+    "id": 1406,
+    "key": "Cipher",
+    "name": "赛飞儿",
+    "names": [
+      "赛法利娅",
+      "赛飞儿"
+    ],
+    "star": 5,
+    "elem": "量子",
+    "weapon": "虚无"
+  },
+  "1408": {
+    "id": 1408,
+    "key": "Phainon",
+    "name": "白厄",
+    "names": [
+      "白厄",
+      "黑厄",
+      "救世主"
+    ],
+    "star": 5,
+    "elem": "物理",
+    "weapon": "毁灭"
+  },
+  "1014": {
+    "id": 1014,
+    "key": "Saber",
+    "name": "Saber",
+    "names": [
+      "Saber",
+      "saber",
+      "阿尔托莉雅",
+      "骑士王",
+      "呆毛王",
+      "呆毛"
+    ],
+    "star": 5,
+    "elem": "风",
+    "weapon": "毁灭"
+  },
+  "1015": {
+    "id": 1015,
+    "key": "Archer",
+    "name": "Archer",
+    "names": [
+      "Archer",
+      "archer",
+      "卫宫士郎",
+      "红A",
+      "红a"
+    ],
+    "star": 5,
+    "elem": "量子",
+    "weapon": "巡猎"
   },
   "8002": {
     "id": 8002,
