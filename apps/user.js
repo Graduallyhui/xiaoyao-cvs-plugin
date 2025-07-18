@@ -389,3 +389,64 @@ function getServer(uid) {
 	}
 	return 'cn_gf01'
 }
+
+// ====================================================
+// ============== Lotus-Plugin API START ==============
+// ====================================================
+
+/**
+ * @description 刷新并获取用户的 stoken 和 cookie，为其他插件提供数据
+ * @param {string} userId QQ号
+ * @returns {Promise<Object|null>} 返回一个包含 stoken 和 cookie 的对象，失败则返回 null
+ */
+export async function getRefreshedCookieAndStoken(userId) {
+	// 伪造一个最小化的 e 对象来调用内部逻辑
+	const e = { user_id: userId };
+	const user = new User(e); // User 类需要在此文件作用域内可用
+  
+	// 1. 获取 Stoken
+	const stokenData = await gsCfg.getUserStoken(userId);
+	if (Object.keys(stokenData).length === 0) {
+	  logger.warn(`[Lotus-Plugin] 调用失败：用户 ${userId} 未绑定stoken。`);
+	  return null;
+	}
+  
+	// 使用第一个 stoken 账户
+	const firstAccountKey = Object.keys(stokenData)[0];
+	const accountStoken = stokenData[firstAccountKey];
+  
+	if (!accountStoken?.stuid || !accountStoken?.stoken) {
+		logger.error(`[Lotus-Plugin] 调用失败：用户 ${userId} 的stoken数据不完整。`);
+		return null;
+	}
+  
+	// 2. 使用 Stoken 刷新 Cookie
+	let cookiesForRefresh = `stuid=${accountStoken.stuid}&stoken=${accountStoken.stoken}`;
+	if (accountStoken?.mid) {
+		cookiesForRefresh += `&mid=${accountStoken.mid}`;
+	}
+	
+	const res = await user.getData("bbsGetCookie", { cookies: cookiesForRefresh }, false);
+	if (!res?.data?.cookie_token) {
+	  logger.error(`[Lotus-Plugin] 调用失败：刷新cookie_token时出错: ${res.message}`);
+	  return null;
+	}
+  
+	const ck = res.data.cookie_token;
+	const fullCookie = `ltoken=${accountStoken.ltoken};ltuid=${accountStoken.stuid};cookie_token=${ck};account_id=${accountStoken.stuid};`;
+	
+	// 3. 组装并返回数据
+	const result = {
+	  cookie: fullCookie,
+	  stuid: accountStoken.stuid,
+	  stoken: accountStoken.stoken,
+	  mid: accountStoken.mid || ''
+	};
+  
+	logger.info(`[Lotus-Plugin] 成功为用户 ${userId} 获取签到数据。`);
+	return result;
+  }
+  
+  // ====================================================
+  // =============== Lotus-Plugin API END ===============
+  // ====================================================
