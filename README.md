@@ -24,7 +24,7 @@ git clone https://github.com/MOPELotus/xiaoyao-cvs-plugin.git ./plugins/xiaoyao-
  
  - 配合TRSS崽使用： https://gitee.com/TimeRainStarSky/Yunzai
 
-#  
+#
 #### 命令说明
 1. 发送 【#图鉴更新】 获取最新的图鉴记录。(必须)
 2. 发送 【#角色信息】 进行触发，例如发送 #刻晴信息，即可返回对应的图片信息。
@@ -39,7 +39,7 @@ git clone https://github.com/MOPELotus/xiaoyao-cvs-plugin.git ./plugins/xiaoyao-
 12. 默认配置文件位于 `./plugins/xiaoyao-cvs-plugin/defSet/config/config.yaml`
 13. 支持stoken绑定以及相关的操作。如：【#更新抽卡记录】
 
-# 
+#
 ### 后续计划
 #### 关于插件兼容以及支持问题：
 >由于喵崽目前uid以及ck管理部分正在重写盲目兼容只会不断的进行修改以及完善，如非必要情况可以先不急更新主体
