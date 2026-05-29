@@ -1,4 +1,10 @@
 @font-face {
+  font-family: "MiSans";
+  src: url("../common/font/MiSans-VF.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+}
+@font-face {
   font-family: "HWZS";
   src: url("../common/font/华文中宋.TTF");
   font-weight: normal;
@@ -82,20 +88,51 @@ body {
   text-shadow: 1px 1px 1px #333;
 }
 .copyright {
-  font-size: 16px;
-  font-family: Number, sans-serif;
+  font-size: 14px;
+  font-family: MiSans, Number, sans-serif;
   text-align: center;
-  color: #fff;
+  color: rgba(255, 255, 255, 0.86);
   position: relative;
-  padding-left: 10px;
-  text-shadow: 1px 1px 1px #000;
+  padding: 8px 12px;
+  text-shadow: none;
   margin: 10px 0;
+  border-radius: 7px;
+}
+.copyright span {
+  display: inline-block;
+  vertical-align: middle;
 }
 .copyright .version {
+  margin-left: 3px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.54);
+}
+.copyright-prefix {
+  margin-right: 4px;
+  color: rgba(255, 255, 255, 0.58);
   font-size: 13px;
-  color: #d3bc8e;
-  display: inline-block;
-  padding: 0 3px;
+  text-transform: uppercase;
+}
+.copyright-bot {
+  color: rgba(255, 255, 255, 0.84);
+}
+.copyright-sep {
+  margin: 0 8px;
+  color: rgba(255, 255, 255, 0.38);
+}
+.copyright-plugin {
+  color: rgba(199, 236, 222, 0.9);
+}
+.copyright-fork {
+  margin-left: 6px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 13px;
+}
+.copyright-lotus {
+  color: #93e6b8;
 }
 /*  */
 .cons {

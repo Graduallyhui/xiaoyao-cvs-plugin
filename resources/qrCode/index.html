@@ -1,41 +1,253 @@
 {{extend defaultLayout}}
 {{block 'css'}}
 <style>
+    body {
+        width: 600px;
+        background: transparent;
+    }
+
     .container {
         width: 600px !important;
-        font-size: 1.125rem;
-        /* 全局字体大小 */
-        background-color: rgb(243, 242, 241);
-        padding: 20px 0 10px 0 !important;
+        min-height: 810px;
+        font-size: 18px;
+        color: #f7fbf8;
+        font-family: MiSans, Number, YS2, PingFangSC-Medium, PingFang SC, sans-serif;
+        background-color: #14342f;
+        padding: 0 !important;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
     }
-    .topTitle table{
-        margin: 0 auto;
+
+    .bg-blur {
+        position: absolute;
+        top: -22px;
+        left: -22px;
+        right: -22px;
+        bottom: -22px;
+        background-image: url("{{_res_path}}/{{bg}}");
+        background-size: cover;
+        background-position: center;
+        filter: blur(4px) brightness(0.98);
+        transform: scale(1.04);
+        z-index: 0;
     }
-    .txt{
+
+    .bg-blur::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(12, 34, 30, 0.04);
+    }
+
+    .login-card {
+        padding: 30px 34px 16px;
+        position: relative;
+        z-index: 1;
+        flex: 1;
+    }
+
+    .login-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        margin-bottom: 22px;
+    }
+
+    .login-title {
+        font-family: MiSans, YS, Number, sans-serif;
+        font-size: 34px;
+        font-weight: 760;
+        line-height: 1.15;
+        letter-spacing: 0;
+        color: #fffaf3;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
+    }
+
+    .pc-badge {
+        min-width: 112px;
+        padding: 8px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 8px;
+        background: rgba(11, 30, 27, 0.56);
+        color: rgba(255, 255, 255, 0.9);
         text-align: center;
-        color: red;
-        margin-top: 10px;
-        padding: 0 10px;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+
+    .pc-badge span {
+        position: relative;
+        top: -2px;
+    }
+
+    .pc-badge-label {
+        display: block;
+        color: rgba(255, 255, 255, 0.62);
+        font-size: 12px;
+        line-height: 1;
+    }
+
+    .pc-badge-value {
+        display: block;
+        margin-top: 4px;
+        color: rgba(255, 255, 255, 0.92);
+        font-size: 14px;
+        line-height: 1.1;
+    }
+
+    .qr-panel {
+        background: #f8fbf8;
+        color: #17322e;
+        border-radius: 8px;
+        padding: 22px 22px 18px;
+        box-shadow: 0 22px 46px rgba(0, 0, 0, 0.24);
+        border: 1px solid rgba(255, 255, 255, 0.36);
+    }
+
+    .qr-shell {
+        width: 434px;
+        height: 434px;
+        margin: 0 auto;
+        padding: 21px;
+        position: relative;
+        border-radius: 8px;
+        background: #fffdf9;
+        border: 1px solid #dbece5;
+        box-shadow: inset 0 0 0 1px rgba(29, 73, 63, 0.06), 0 8px 22px rgba(25, 66, 57, 0.12);
+    }
+
+    #qrCode {
+        width: 392px;
+        height: 392px;
+    }
+
+    #qrCode table {
+        margin: 0 auto;
+        border-radius: 6px;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        overflow: hidden;
+    }
+
+    #qrCode td {
+        border-radius: 1px;
+    }
+
+    .qr-logo {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 78px;
+        height: 78px;
+        padding: 6px;
+        transform: translate(-50%, -50%);
+        border-radius: 14px;
+        background: #fffdf9;
+        box-shadow: 0 8px 20px rgba(25, 66, 57, 0.18);
+    }
+
+    .qr-logo img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    .status-line {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 16px;
+        padding: 12px 14px;
+        border-radius: 8px;
+        background: #edf5f0;
+        color: #30534c;
+        font-size: 14px;
+    }
+
+    .status-label {
+        color: #8b5265;
+        font-family: MiSans, Number, sans-serif;
+        font-weight: 650;
+    }
+
+    .notice {
+        margin-top: 16px;
+        min-height: 62px;
+        padding: 13px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        background: rgba(11, 30, 27, 0.56);
+        color: rgba(255, 255, 255, 0.88);
+        font-size: 14px;
+        line-height: 1.7;
+        text-align: center;
+    }
+
+    .container .copyright {
+        margin: 0 34px 18px;
+        z-index: 1;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.46);
     }
 </style>
 {{/block}}
 {{block 'main'}}
-<div class="topTitle" style="margin: 0 auth;">
-   
-</div>
-<div class="txt">
-    免责声明：请勿随意扫码，谁触发谁扫码，bot仅提供功能。<br/>如果恶意抢码导致账号出问题的请自行承担后果
+<div class="bg-blur"></div>
+<div class="login-card">
+    <div class="login-header">
+        <div>
+            <div class="login-title">米游社扫码登录</div>
+        </div>
+        <div class="pc-badge">
+            <span class="pc-badge-label">登录渠道</span>
+            <span class="pc-badge-value">PC米游社</span>
+        </div>
+    </div>
+
+    <div class="qr-panel">
+        <div class="qr-shell">
+            <div id="qrCode"></div>
+            <div class="qr-logo">
+                <img src="{{_res_path}}/qrCode/img/lotus.jpg" alt="Lotus">
+            </div>
+        </div>
+        <div class="status-line">
+            <span>请使用米游社 App 扫码确认</span>
+            <span class="status-label" id="expireTip">短时有效</span>
+        </div>
+    </div>
+
+    <div class="notice">
+        免责声明：请勿随意扫码，谁触发谁扫码，bot 仅提供功能。<br/>如果恶意抢码导致账号出问题的请自行承担后果。
+    </div>
 </div>
 <script src="{{_res_path}}/qrCode/js/jquery-1.10.2.min.js"></script>
 <script src="{{_res_path}}/qrCode/js/jquery.qrcode.min.js"></script>
 <script>
+var loginUrl = "{{url}}".replace(/#38;/g,'');
 var config = {
-    width:500,//值是number类型, 表示的单位是px 必须传递
-    height:500,//值是number类型, 表示的单位是px 必须传递
-    text:"{{url}}".replace(/#38;/g,''),//text就表示二维码中存储的数据 必须传递
-    correctLevel:2,//取值为0|1|2|3 表示二维码的纠错级别0:L/1:M/2:Q/3:H ,默认0 可选参数
-    render:"table"//取值:table/canvas , 默认table 可选参数
+    width:392,
+    height:392,
+    text:loginUrl,
+    correctLevel:3,
+    foreground:"#173e36",
+    background:"#fffdf9",
+    render:"table"
 };
-$(".topTitle").qrcode(config);
+$("#qrCode").qrcode(config);
+try {
+    var expire = Number(new URL(loginUrl).searchParams.get("expire"));
+    var seconds = expire - Math.floor(Date.now() / 1000);
+    if (seconds > 0) {
+        $("#expireTip").text("约 " + Math.max(1, Math.round(seconds / 60)) + " 分钟内有效");
+    } else {
+        $("#expireTip").text("请重新获取二维码");
+    }
+} catch (e) {}
 </script>
 {{/block}}
