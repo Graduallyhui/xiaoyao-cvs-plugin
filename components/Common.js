@@ -1,5 +1,5 @@
 import { Cfg } from "./index.js";
-import { yunzaiVersion,isV3 } from "./Changelog.js";
+import { currentVersion, yunzaiVersion,isV3 } from "./Changelog.js";
 export const render = async function (path, params, cfg) {
   let paths = path.split("/");
   let { render, e } = cfg;
@@ -17,7 +17,7 @@ export const render = async function (path, params, cfg) {
     elemLayout: layout_path + "elem.html",
     sys: {
       scale: Cfg.scale(cfg.scale || 1),
-      copyright: `<span class="copyright-prefix">Created By</span><span class="copyright-bot">Yunzai-Bot<span class="version">${yunzaiVersion}</span></span><span class="copyright-sep">&</span><span class="copyright-plugin">xiaoyao-cvs-plugin</span><span class="copyright-fork">fork by <span class="copyright-lotus">Lotus</span></span>`
+      copyright: `Created By Yunzai-Bot<span class="version">${yunzaiVersion}</span> &  xiaoyao-cvs-Plugin<span class="version">${currentVersion}</span>`
     }
   },"png");
  let ret = true
@@ -39,7 +39,7 @@ export const render_path = async function (path, params, cfg,path_) {
     elemLayout: _layout_path + "elem.html",
     sys: {
       scale: Cfg.scale(cfg.scale || 1),
-      copyright: `<span class="copyright-prefix">Created By</span><span class="copyright-bot">Yunzai-Bot<span class="version">${yunzaiVersion}</span></span><span class="copyright-sep">&</span><span class="copyright-plugin">xiaoyao-cvs-plugin</span><span class="copyright-fork">fork by <span class="copyright-lotus">Lotus</span></span>`
+      copyright: `Created By Yunzai-Bot<span class="version">${yunzaiVersion}</span> & xiaoyao-cvs-Plugin<span class="version">${currentVersion}</span>`
     }
   });
  let ret = true

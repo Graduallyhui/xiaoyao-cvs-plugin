@@ -1,7 +1,6 @@
 import {
 	isV3
 } from '../components/Changelog.js'
-import fs from "node:fs";
 import mys from "../model/mhyTopUpLogin.js"
 import Common from "../components/Common.js";
 import { bindStoken } from './user.js'
@@ -59,15 +58,13 @@ export async function qrCodeLogin(e, { render }) {
 	let Mys = new mys(e)
 	let res = await Mys.qrCodeLogin()
 	if (!res?.data) return false;
-	let bg = await getQrBg()
 	e._reply = e.reply
 	let sendMsg = [segment.at(e.user_id), '\n请扫码以完成绑定\n']
 	e.reply = (msg) => {
 		sendMsg.push(msg)
 	}
 	await Common.render(`qrCode/index`, {
-		url: res.data.url,
-		bg
+		url: res.data.url
 	}, {
 		e,
 		render,
@@ -80,17 +77,6 @@ export async function qrCodeLogin(e, { render }) {
 	if (!res) return true;
 	await bindSkCK(e, res)
 	return true;
-}
-
-async function getQrBg() {
-	let bgPath = `${_path}/plugins/xiaoyao-cvs-plugin/resources/qrCode/img/bg`
-	try {
-		let files = fs.readdirSync(bgPath).filter(file => /\.(jpe?g|png|webp)$/i.test(file))
-		if (!files.length) return ""
-		return `qrCode/img/bg/${files[Math.floor(Math.random() * files.length)]}`
-	} catch (e) {
-		return ""
-	}
 }
 
 
