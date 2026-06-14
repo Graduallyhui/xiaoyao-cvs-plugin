@@ -273,25 +273,34 @@ export default class miHoYoApi {
 				types: 'pass'
 			},
 			qrCodeLogin: {
-				url: `${mys.hk4_sdk}/hk4e_cn/combo/panda/qrcode/fetch`,
-				body: {
-					app_id: mys.app_id,
-					device: data.device
-				}
+				url: `${mys.pass_api}/account/ma-cn-passport/app/createQRLogin`,
+				body: {},
+				types: 'pass'
 			},
 			qrCodeQuery: {
-				url: `${mys.hk4_sdk}/hk4e_cn/combo/panda/qrcode/query`,
+				url: `${mys.pass_api}/account/ma-cn-passport/app/queryQRLoginStatus`,
 				body: {
-					app_id: mys.app_id,
-					device: data.device,
 					ticket: data.ticket
-				}
+				},
+				types: 'pass'
 			},
 			getTokenByGameToken: {
 				url: `${mys.pass_api}/account/ma-cn-session/app/getTokenByGameToken`,
 				body: {
 					account_id: data.uid * 1,
 					game_token: data.token
+				},
+				types: 'pass'
+			},
+			exchange: {
+				url: `${mys.pass_api}/account/ma-cn-session/app/exchange`,
+				body: {
+					"src_token": {
+						"token": data.token,
+						"token_type": 1
+					},
+					"mid": data.mid,
+					"dst_token_type": 2
 				},
 				types: 'pass'
 			},
@@ -487,7 +496,7 @@ export default class miHoYoApi {
 					"Connection": 'Keep-Alive',
 					"Accept-Encoding": "gzip, deflate, br",
 					"x-rpc-channel": "appstore",
-					Cookie: this.cookies,
+					Cookie: this.cookies || '',
 				}
 				break;
 				case "pay":

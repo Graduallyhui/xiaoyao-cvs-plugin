@@ -6,7 +6,7 @@ export default class mysTopLogin {
         this.e = e;
         this.init();
         //消息提示以及风险警告
-        this.sendMsgUser = `免责声明:您将通过扫码完成获取米游社sk以及ck。\n请使用米游社扫描二维码登录。\n由于风控，登录渠道为游戏-未定事件簿，属正常现象。~`
+        this.sendMsgUser = `免责声明:您将通过扫码完成获取米游社sk以及ck。\n请使用米游社扫描二维码登录。`
         this.sendMsgUserPassLogin = `免责声明:您将通过密码完成获取米游社sk以及ck。`
         this.sendMsgPay = `格式参考：#原神充值 6(商品ID)\n可通过【#商品列表】获取可操作商品`
         this.sendMsgOrderReg = `消息格式无法识别，格式参考：#订单查询16347*****(订单号),100000000(uid)`
@@ -22,48 +22,79 @@ export default class mysTopLogin {
             this.e.reply([segment.at(this.e.user_id), `前置二维码未扫描，请勿重复触发指令`])
             return false;
         }
-        this.device = await utils.randomString(64)
         this.e.reply(this.sendMsgUser)
-        let res = await this.user.getData("qrCodeLogin", {
-            device: this.device
-        },false)
-        if (!res.data) {
+        let res = await this.user.getData("qrCodeLogin", {}, false)
+        if (!res?.data?.url) {
             return false;
         }
-        res.data["ticket"] = res?.data?.url.split("ticket=")[1]
+        res.data["ticket"] = res?.data?.ticket || res?.data?.url?.split("ticket=")[1]
+        if (!res.data.ticket) {
+            return false
+        }
         return res
     }
     async GetQrCode(ticket) {
+        if (!ticket) return false
         await utils.redisSet(this.e.user_id, "GetQrCode", { GetQrCode: 1 }, 60 * 5) //设置5分钟缓存避免重复触发
         let res;
         let RedisData = await utils.redisGet(this.e.user_id, "GetQrCode")
         for (let n = 1; n < 60; n++) {
             await utils.sleepAsync(5000)
             res = await this.user.getData("qrCodeQuery", {
-                device: this.device, ticket
-            },false)
-            if (res?.data?.stat == "Scanned" && RedisData.GetQrCode == 1) {
+                ticket
+            }, false)
+            if (res?.retcode && res.retcode != 0) {
+                await utils.redisDel(this.e.user_id, 'GetQrCode')
+                await this.e.reply(res?.message || "二维码已过期", true)
+                return false
+            }
+            const status = res?.data?.status || res?.data?.stat
+            if (status == "Scanned" && RedisData?.GetQrCode == 1) {
                 Bot.logger.mark(JSON.stringify(res))
                 await this.e.reply("二维码已扫描，请确认登录", true)
                 RedisData.GetQrCode++;
             }
-            if (res?.data?.stat == "Confirmed") {
+            if (status == "Confirmed") {
                 Bot.logger.mark(JSON.stringify(res))
                 break
             }
         }
         await utils.redisDel(this.e.user_id, 'GetQrCode')
-        if (!res?.data?.payload?.raw) {
+        if ((res?.data?.status || res?.data?.stat) != "Confirmed") {
             await this.e.reply("验证超时", true)
             return false
         }
-        let raw = JSON.parse(res?.data?.payload?.raw)
-        let UserData = await this.user.getData("getTokenByGameToken", raw,false)
-        let ck = await this.user.getData("getCookieAccountInfoByGameToken", raw,false)
-        return {
-            cookie: `ltoken=${UserData.data?.token?.token};ltuid=${UserData.data?.user_info?.aid};cookie_token=${ck.data?.cookie_token}`,
-            stoken: `stoken=${UserData.data?.token?.token};stuid=${UserData.data?.user_info?.aid};mid=${UserData?.data?.user_info.mid}`
+        const tokenData = this.pickToken(res.data?.tokens, ["stoken_v2", "stoken"])
+        const SToken = tokenData?.token
+        const stuid = res.data?.user_info?.aid || res.data?.user_info?.uid || res.data?.user_info?.account_id
+        const mid = res.data?.user_info?.mid
+        if (!SToken || !stuid) {
+            await this.e.reply("扫码登录返回信息不完整，未能获取stoken", true)
+            return false
         }
+        const stokenCookie = [`stuid=${stuid}`, `stoken=${SToken}`, mid ? `mid=${mid}` : ""].filter(Boolean).join(";") + ";"
+        const ltokenRes = await this.user.getData("getLtoken", { cookies: stokenCookie }, false)
+        const ltoken = this.pickToken(res.data?.tokens, ["ltoken", "ltoken_v2"])?.token || ltokenRes?.data?.ltoken || ltokenRes?.data?.token?.token
+        let cookies = `uid=${stuid}&stoken=${SToken}`
+        if (mid) cookies += `&mid=${mid}`
+        let ck = await this.user.getData("bbsGetCookie", { cookies }, false)
+        if (!ltoken || !ck?.data?.cookie_token) {
+            await this.e.reply(`获取ck失败：${ck?.message || ltokenRes?.message || "接口返回为空"}`, true)
+            return false
+        }
+        return {
+            cookie: `ltoken=${ltoken};ltuid=${stuid};cookie_token=${ck.data.cookie_token};account_id=${stuid};`,
+            stoken: `stoken=${SToken};stuid=${stuid};ltoken=${ltoken};${mid ? `mid=${mid};` : ""}`
+        }
+    }
+
+    pickToken(tokens = [], names = []) {
+        if (!Array.isArray(tokens)) return false
+        for (const name of names) {
+            const token = tokens.find(item => item?.name == name)
+            if (token?.token) return token
+        }
+        return tokens.find(item => item?.token)
     }
 
     async UserPassMsg() {
